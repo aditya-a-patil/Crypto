@@ -12,12 +12,13 @@ from base64 import b64decode
 import os, sys, getopt, binascii, base64
 import datetime, time
 
-global server, port, url, user, key
+global server, port, url, user, key, lastMessageID
 server = ''
 port = ''
 user = ''
 url = {}
 headers = {}
+lastMessageID = 0
 
 PRINT_WELCOME_MSG = 'Welcome to JMessage. Type (h)elp for commands.'
 PRINT_COMMAND_ERROR = 'Command error... Please use'
@@ -140,7 +141,7 @@ def encrypt(KEY, msg):
     #0. convert message to UTF-8 encoded string
     message = msg.encode('utf-8')
     
-    #1. Generate a random 128-bit AES key K using a secure random number generator.
+    #1.
     aes_key = os.urandom(16)
 
     #2
@@ -181,7 +182,7 @@ def encrypt(KEY, msg):
 
     return CIPHER
 
-def decrypt(KEY, cipher, sender):
+def decrypt(KEY, cipher, sender, msgID):
 
     message = 'No new messages.'
     #1
@@ -233,13 +234,18 @@ def decrypt(KEY, cipher, sender):
         print 'bad user'
         return message
     else:
-
         message = msg_formatted.split(":")[1]
-        return message
 
     #10 - Send read receipt
+    if '>>>READMESSAGE' not in message:
+        readrcpt = '>>>READMESSAGE %d' % msgID
+        key = lookupKey(sender)
+        if key.json()['status'] == 'found key':
+            payload = prepareOutgoingMessage(key.json()['keyData'], readrcpt, sender)
+
 
     #11 - Output M
+    return message
 
 
         
@@ -294,7 +300,9 @@ def prepareOutgoingMessage(pubKey, msg, ruser):
     cipherText = encrypt(pubKey, msg)
     payload = {}
     payload['recipient'] = ruser
-    payload['messageID'] = int(time.time())
+    global lastMessageID
+    lastMessageID = lastMessageID + 1
+    payload['messageID'] = lastMessageID
     payload['message'] = cipherText
     
     r = requests.post(url['sendMessage']+user, data=json.dumps(payload), headers=headers)
@@ -311,9 +319,10 @@ def prepareIncomingMessage():
             sender = msg.json()['messages'][i]['senderID']
             key = lookupKey(sender)
             cipher = msg.json()['messages'][i]['message']
-            message = decrypt(key.json()['keyData'], cipher, sender)
+            msgID = msg.json()['messages'][i]['messageID']
+            message = decrypt(key.json()['keyData'], cipher, sender, msgID)
             if message != 'No new messages.':
-                print 'Message ID: %s' % msg.json()['messages'][i]['messageID']
+                print 'Message ID: %s' % msgID
                 print 'From: %s' % sender
                 print 'Time: %s' % utc2DateTime(msg.json()['messages'][i]['sentTime'])
             print message
@@ -406,6 +415,7 @@ if __name__ == "__main__":
 
         setupNetworkStrings(server, port)
 
+        genKeys()
         print PRINT_WELCOME_MSG
 
         while 1==1:
