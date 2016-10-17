@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+
+{% block title %}Test Message App | About{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Users</h2>
+                {% if users %}
+                    {% for u in users %}
+                        <p>{{ u.user }}  -  {{ u.fingerprint }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p>No users found.</p>
+                {% endif %}
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

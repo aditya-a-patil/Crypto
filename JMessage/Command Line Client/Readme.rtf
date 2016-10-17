@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504
+{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;\csgray\c100000;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww10800\viewh13700\viewkind0
+\deftab720
+\pard\pardeftab720\sl280\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+# JMessage - Web Application \
+\
+This is a CLI client for JMessage.\
+\
+## Installation\
+\
+1. Following Crypto libraries are needed:\
+	- pyCrypto\
+	- M2Crypto\
+\
+## Usage\
+\
+1. Run \'91client.py\'92 using Python2.7\
+\
+	```\
+	python client.py -s <server> -p <port> -u <username>\
+	```\
+\
+## Notes\
+\
+1. Input server address, port and username to login. (Password is not yet implemented.)\
+2. Use \'91list\'92 or \'91f <user>\'92 to check out other registered users and their fingerprint.\
+3. To send a message type \'91c <user>\'92 and input message. Press return to send message.\
+4. To receive message, press return or type \'91get\'92.\
+5. To generate new set of public key pair, type \'91genkeys\'92.\
+6. Get help for all options by typing \'91help\'92 and \'91quit\'92 for exiting.\
+\
+## Caution\
+\
+In an event where there are unread messages but a user logs in which results in new key pair generation, the application might crash or not retrieve message. In this case relaunch the application.\
+\
+## License\
+\
+JMessage is under no license as of now.\
+}
