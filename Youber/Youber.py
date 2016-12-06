@@ -3,15 +3,7 @@ from Crypto.Hash import MD5
 import binascii, base64
 import os, sys
 from base64 import b64decode, b64encode
-
-'''
-* Let `l` be the length of the unpadded string
- * Let `m` be the amount of padding (`16 - (l % 16)`).
- * Append `m` bytes of the digit ` m` to the end of the input string.
- '''
-
-
-
+ 
 BS = 16
 pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS) 
 unpad = lambda s : s[0:-ord(s[-1])]
@@ -54,13 +46,14 @@ def run_self_tests():
 
 class Youber:
 
-        run_self_tests() #Self tests are run as soon as Youber object is made to determine the crypto algorithms implemeted are running properly.
+        run_self_tests() #Self tests are run as soon as Youber library is called to determine if the crypto algorithms implemeted are running properly.
 
         def read_database(self, database, password):
 
+                print '\nReading database: %s' % database,
                 if os.path.isfile(database):
                         with open(database) as f:
-                                print '\nReading database: %s\n' % database
+                                
                                 s = f.read()
 
                                 magic_number = binascii.hexlify(s[:4])
@@ -82,7 +75,11 @@ class Youber:
                                 
                                 digest = MD5_hash(randon_string)
 
-                                assert digest == randon_string_md5
+                                try:
+                                        assert digest == randon_string_md5
+                                except:
+                                        print '...[error]'
+                                        sys.exit()
 
                                 key_value_pairs = s[88:]
                                 i = 0
@@ -111,10 +108,16 @@ class Youber:
 
                                         dictionary[key.rstrip("\x00")] = value.rstrip("\x00")
                                         
-                                        assert digest2 == value_md5
+                                        try:
+                                                assert digest2 == value_md5
+                                        except:
+                                                print '[error]'
+                                                sys.exit()
                                         
+                                print '\n'
                                 return dictionary
                 else:
+                        print '...[error]\n'
                         return 'No such file at this path'
 
         def write_database(self, database, password, dictionary):
@@ -146,37 +149,7 @@ class Youber:
                         key_value_pairs += encrypted_value
                         key_value_pairs += MD5_hash(dictionary.values()[i]) 
 
-                print '\nWriting to database...',
-                with open("test.db", "w") as db:
+                print '\nWriting to database: %s' %database,
+                with open(database, "w") as db:
                         db.write(magic_number+salt+iv+blob1+key_value_pairs)
                         print '... [completed]'
-
-
-
-
-                        
-
-
-                
-                                        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-    
-
-

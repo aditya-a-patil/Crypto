@@ -1,0 +1,59 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504
+{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;\csgray\c100000;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl280\partightenfactor0
+
+\f0\fs24 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 # JMessage - Web Application \
+\
+This is a Web Application client for JMessage.\
+\
+## Installation\
+\
+1. Dependencies for Web Application can be installed using pip:\
+	\
+	```\
+	pip install -r requirements.txt\
+	```\
+\
+2. Additionally following Crypto libraries are needed:\
+	- pyCrypto\
+	- M2Crypto\
+\
+## Usage\
+\
+1. Run \'91messenger.py\'92 using Python2.7\
+\
+	```\
+	python messenger.py\
+	```\
+\
+2. Open URL http://localhost:5000 to access the Web Application.\
+\
+## Notes\
+\
+1. Input server address and username to login. (Password is not yet implemented.)\
+2. Navigate to users tab to check out other registered users and their fingerprint.\
+3. To send a message input recipient name and message and hit send.\
+4. To receive message refresh the home page or navigate to messages page.\
+5. To generate new set of public key pair, press \'91generate keys\'92 button on top right corner.\
+\
+## Caution\
+\
+This application is not thoroughly tested hence there may be occasional Errors. In case of such an event, navigate to localhost:5000/logout and re-login.\
+\
+## Credits\
+\
+The developer has used flask-messenger as a base template and built JMessage on top of it. \
+\pard\tx692\pardeftab692\pardirnatural\partightenfactor0
+\cf2 flask-messenger is licensed under the MIT license, which can be viewed at [flask-messenger/LICENSE](flask-messenger/LICENSE) and developer takes no credit for base framework. \
+However, the final product JMessage is the work of Aditya Patil.\
+\pard\pardeftab720\sl280\partightenfactor0
+\cf2 \
+## License\
+\
+JMessage is under no license as of now.\
+}

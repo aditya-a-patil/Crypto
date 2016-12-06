@@ -24,6 +24,8 @@ def record_analytics():
 @app.route('/show')
 def show_items():
     password = request.cookies.get('password', None) or request.args.get('password', '')
+    print ('hello')
+    print (password)
     try:
         db = load_passwords.read_database(PASSWORD_DATABASE, password)
     except Exception:
