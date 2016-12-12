@@ -19,7 +19,8 @@ public class TestEncryption {
 		}
 		
 		// Decrypt the resulting ciphertext
-		String decryptedMsg = receiverEncryptor.decryptMessage(encryptedMsg, senderEncryptor.mSenderID, senderKeyPair);
+		long msgIDTEMP = 1;
+		String decryptedMsg = receiverEncryptor.decryptMessage(encryptedMsg, senderEncryptor.mSenderID, senderKeyPair, msgIDTEMP);
 		if (decryptedMsg == null) {
 			System.out.println("Failed to decrypt message.");
 			return false;

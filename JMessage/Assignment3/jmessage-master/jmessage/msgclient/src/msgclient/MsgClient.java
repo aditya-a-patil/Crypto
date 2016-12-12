@@ -138,6 +138,7 @@ public class MsgClient {
 			System.out.println("Error sending read receipt.");
 		} else {
 			// Send the encrypted message
+			System.out.println("read receipt sent. " + readMessage);
 			mServerConnection.sendEncryptedMessage(receiverID, mCurrentMessageID++, encryptedMessage);
 		}
 	}
@@ -149,7 +150,7 @@ public class MsgClient {
 		System.out.println("Message ID: " + message.getMessageID());
 		System.out.println("From: " + message.getSenderID());
 		System.out.println("Time: " + time);
-		System.out.println(message.getMessageText());
+		System.out.println("MESSAGE: " + message.getMessageText());
 	}
 	
 	// Print pending messages
@@ -197,7 +198,7 @@ public class MsgClient {
 				MsgKeyPair senderKey = mServerConnection.lookupKey(nextMessage.getSenderID());
 				if (senderKey != null) {
 					String decryptedText = mEncryptor.decryptMessage(nextMessage.getMessageText(), 
-						nextMessage.getSenderID(), senderKey);
+						nextMessage.getSenderID(), senderKey, nextMessage.getMessageID());
 					
 					if (decryptedText != null) {
 						if (isReadReceipt(decryptedText) == false) {

@@ -72,13 +72,17 @@ def decrypt(KEY, cipher, sender, msgID, user):
     ciphertext2 = ciphertext2[16:]
     msg_padded = aesDecryption(plaintext1_aes_key, ciphertext2, iv)
 
+    print 'msgID %d' % msgID    #TODO: REMOVE
+    print msg_padded    #TODO: REMOVE
+    print msg_padded.encode('hex')   #TODO: REMOVE
     #7
     msg_crc = unpad(msg_padded)
 
     #8
     msg_formatted = msg_crc[:-4]
 
-    crc = verifyCRC(msg_crc)   
+    crc = verifyCRC(msg_crc)
+    crc = True  #TODO: REMOVE
     if not crc:
         return message
     

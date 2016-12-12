@@ -26,6 +26,8 @@ import javax.crypto.spec.IvParameterSpec;
 import java.util.Arrays;
 import java.nio.charset.StandardCharsets;
 
+import java.math.BigInteger;
+
 public class MessageEncryptor {
 
 	static final String CIPHERTEXT_DELIMITER = " ";
@@ -164,7 +166,7 @@ public class MessageEncryptor {
 	}
 	
 	// Decrypt a given ciphertext using our secret key
-	public String decryptMessage(String ciphertext, String senderId, MsgKeyPair senderKey) {
+	public String decryptMessage(String ciphertext, String senderId, MsgKeyPair senderKey, long msgID) {
 		byte[] aesKey;
 		byte[] aesPlaintext;
 		
@@ -224,6 +226,7 @@ public class MessageEncryptor {
 
 	    // Use the resulting AES key to instantiate an AES cipher
 	    // and decrypt the payload
+		//System.out.println("---Decrypting C2");
 	    Cipher aesCipher;
 	    try {
 	    	// Decode AES ciphertext
@@ -239,21 +242,28 @@ public class MessageEncryptor {
 	    	
 	        // AES decrypt the ciphertext buffer
 	        aesPlaintext = aesCipher.doFinal(actualCiphertext);   
-	        
+
+			//System.out.println("aesPlaintext");
+			BigInteger n = new BigInteger(aesPlaintext);
+			String hexa = n.toString(16);
+			System.out.println("MsgID: " + msgID + " HEX: " + hexa);
+
 	        // Remove the PKCS7 padding
 	        if (aesPlaintext.length >= AES_BLOCKSIZE) {
 	        	int paddingLen = aesPlaintext[aesPlaintext.length - 1];
 	        	if (paddingLen < 0 || paddingLen > AES_BLOCKSIZE) {
+					//System.out.println("!!!!!!!!!!!!!!!!!!!!! BAD PADDING LENGTH");
 	        		return null;
 	        	}
 	        	
 	        	for (int i = 0; i < paddingLen; i++) {
 	        		if (aesPlaintext[(aesPlaintext.length - 1) - i] != paddingLen) {
 	        			// Bad padding
+						//System.out.println("!!!!!!!!!!!!!!!!!!!!! BAD PADDING");
 	        			return null;
 	        		}
 	        	}
-	        	
+
 	        	// Padding checks out -- remove it
 	        	aesPlaintext = Arrays.copyOfRange(aesPlaintext, 0, (aesPlaintext.length) - paddingLen);
 	        } else {
@@ -270,9 +280,11 @@ public class MessageEncryptor {
     	long crcVal = crc.getValue();
     	byte[] crcBytes = {0, 0, 0, 0, 0, 0, 0, 0};
     	System.arraycopy(aesPlaintext, aesPlaintext.length - 4, crcBytes, 4, 4);
+		System.out.println(crcVal);
+		System.out.println(bytesToLong(crcBytes));
     	if (crcVal != bytesToLong(crcBytes)) {
     		// Invalid CRC
-			System.out.println("!!!!!!!!!!!!!!BAD CRC");
+			System.out.println("!!!!!!!!!!!!!!BAD CRC " + aesPlaintext);
 
 			//return null; // TODO: UNCOMMENT THIS!!!
     	}
@@ -284,6 +296,7 @@ public class MessageEncryptor {
     	// that <senderID> matches the expected sender
     	int delimiterLoc = messagePlaintext.indexOf(SENDERID_DELIMITER);
     	if (delimiterLoc < 1) {
+			System.out.println("***************************** BAD SENDER_DELIMITER " + messagePlaintext);
     		return null;
     	}
 
